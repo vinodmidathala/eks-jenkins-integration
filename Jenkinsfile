@@ -8,7 +8,7 @@ pipeline {
 	stages {
 		stage('Checking EKS Access') {
 			steps {
-				withAWS(credentials: 'aws-creds') {
+				withAWS(credentials: 'ecr-creds') {
 					sh 'aws eks update-kubeconfig --region us-east-1  --name eks-cluster'
 					sh 'kubectl get pods -A'
 				}
@@ -17,7 +17,7 @@ pipeline {
 
 		stage('Creating EKS Namespaces') {
 			steps {
-				withAWS(credentials: 'aws-creds') {
+				withAWS(credentials: 'ecr-creds') {
 					sh 'aws eks update-kubeconfig --region us-east-1  --name eks-cluster'
 					sh 'kubectl create ns development || exit 0'
 					sh 'kubectl create ns production || exit 0'
@@ -31,7 +31,7 @@ pipeline {
 			}
 
 			steps {
-				withAWS(credentials: 'aws-creds') {
+				withAWS(credentials: 'ecr-creds') {
 					sh 'aws eks update-kubeconfig --region us-east-1  --name eks-cluster'
 					sh 'ls -al'
 					sh 'kustomize build kustomize/overlays/development'
@@ -49,7 +49,7 @@ pipeline {
 			}
 
 			steps {
-				withAWS(credentials: 'aws-creds') {
+				withAWS(credentials: 'ecr-creds') {
 					sh 'aws eks update-kubeconfig --region us-east-1  --name eks-cluster'
 					sh 'ls -al'
 					sh 'kubectl delete -k kustomize/overlays/development'
@@ -64,7 +64,7 @@ pipeline {
 			}
 
 			steps {
-				withAWS(credentials: 'aws-creds') {
+				withAWS(credentials: 'ecr-creds') {
 					sh 'aws eks update-kubeconfig --region us-east-1  --name eks-cluster'
 					sh 'ls -al'
 					sh 'kustomize build kustomize/overlays/production'
@@ -82,7 +82,7 @@ pipeline {
 			}
 
 			steps {
-				withAWS(credentials: 'aws-creds') {
+				withAWS(credentials: 'ecr-creds') {
 					sh 'aws eks update-kubeconfig --region us-east-1  --name eks-cluster'
 					sh 'ls -al'
 					sh 'kubectl delete -k kustomize/overlays/production'
