@@ -41,22 +41,6 @@ pipeline {
 			}
 		}
 
-		stage('Destroy App In Dev Namespace') {
-			when {
-				expression {
-					"${env.PROD_DESTROY}" == 'YES' && "$BRANCH_NAME" == 'development'
-				}
-			}
-
-			steps {
-				withAWS(credentials: 'ecr-creds') {
-					sh 'aws eks update-kubeconfig --region us-east-1  --name eks-cluster'
-					sh 'ls -al'
-					sh 'kubectl delete -k kustomize/overlays/development'
-					sh 'kubectl get pods,deploy,svc -n development'
-				}
-			}
-		}
 
 		stage('Deploy To Prod Namespace') {
 			when {
@@ -74,21 +58,5 @@ pipeline {
 			}
 		}
 
-		stage('Destroy App In Prod Namespace') {
-			when {
-				expression {
-					"${env.PROD_DESTROY}" == 'YES' && "$BRANCH_NAME" == 'production'
-				}
-			}
-
-			steps {
-				withAWS(credentials: 'ecr-creds') {
-					sh 'aws eks update-kubeconfig --region us-east-1  --name eks-cluster'
-					sh 'ls -al'
-					sh 'kubectl delete -k kustomize/overlays/production'
-					sh 'kubectl get pods,deploy,svc -n production'
-				}
-			}
-		}
 	}
 }
