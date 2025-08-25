@@ -6,7 +6,7 @@ resources:
 
 replicas:
 - name: nginx001
-  count: 4
+  count: 1
 
 images:
 - name: hello123
